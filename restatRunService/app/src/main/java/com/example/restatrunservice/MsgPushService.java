@@ -108,7 +108,7 @@ public class MsgPushService extends Service {
                 if (user.isCheckSenLink() && user.getLink() != null) {
                     try {
                         mp.reset();
-                        mp.setDataSource(url);
+                        mp.setDataSource(user.getLink());
                         mp.prepare();
                     } catch (IOException e) {
                         e.printStackTrace();
