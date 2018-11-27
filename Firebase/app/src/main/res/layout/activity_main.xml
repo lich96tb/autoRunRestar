@@ -124,6 +124,7 @@
         android:id="@+id/dialog_display"
         android:layout_width="150dp"
         android:layout_height="90dp"
+        android:visibility="gone"
         android:layout_centerInParent="true"
         android:background="@drawable/dialog_display"
         android:padding="5dp">
@@ -154,7 +155,7 @@
                 android:id="@+id/valueVolume"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="50%"
+                android:text="...%"
                 android:textColor="@color/textColor"
                 android:textSize="30sp" />
         </LinearLayout>

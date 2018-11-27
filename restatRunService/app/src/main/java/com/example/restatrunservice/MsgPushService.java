@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -31,11 +32,15 @@ public class MsgPushService extends Service {
     String url = "http://vprbbc.streamguys.net:80/vprbbc24.mp3";
     private DatabaseReference mDatabase;
     int i = 0;
+    private AudioManager audio;
+    private int maxVolume;
 
     @Override
     public void onCreate() {
         super.onCreate();
         mDatabase = FirebaseDatabase.getInstance().getReference();
+        audio = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        maxVolume = audio.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
         mp = new MediaPlayer();
         broadcastReceiver = new BroadcastReceiver() {
             @Override
@@ -115,6 +120,19 @@ public class MsgPushService extends Service {
                 } else {
                     mp.pause();
                 }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        mDatabase.child("Volume").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                int value=dataSnapshot.getValue(Integer.class);
+                audio.setStreamVolume(AudioManager.STREAM_MUSIC, maxVolume*value/100, 0);
             }
 
             @Override
