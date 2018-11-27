@@ -55,17 +55,42 @@
 
     </LinearLayout>
 
-    <EditText
+    <TextView
         android:id="@+id/edtLinkNhac"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="111dp"
         android:ems="10"
         android:hint="link nhạc"
         android:inputType="textAutoComplete|textPersonName"
+        android:onClick="clickChonbaihat"
         android:text="http://vprbbc.streamguys.net:80/vprbbc24.mp3"
+        android:textColor="@color/textColor" />
+
+    <TextView
+        android:gravity="center"
+        android:paddingLeft="30dp"
+        android:id="@+id/txtSelect1"
+        android:onClick="clickSelect"
+        android:layout_width="150dp"
+        android:layout_height="40dp"
+        android:layout_above="@+id/edtLinkNhac"
+        android:background="#b432dec1"
+        android:text="bai hat1"
+        android:textColor="@color/textColor" />
+
+    <TextView
+        android:onClick="clickSelect"
+        android:paddingLeft="30dp"
+        android:id="@+id/txtSelect2"
+        android:gravity="center"
+        android:layout_width="150dp"
+        android:layout_height="40dp"
+        android:layout_above="@+id/txtSelect1"
+        android:background="#b432dec1"
+        android:text="bai hat2"
+        android:layout_marginBottom="10dp"
         android:textColor="@color/textColor" />
 
     <Button
@@ -120,14 +145,15 @@
             android:max="100"
             android:rotation="270" />
     </LinearLayout>
+
     <LinearLayout
         android:id="@+id/dialog_display"
         android:layout_width="150dp"
         android:layout_height="90dp"
-        android:visibility="gone"
         android:layout_centerInParent="true"
         android:background="@drawable/dialog_display"
-        android:padding="5dp">
+        android:padding="5dp"
+        android:visibility="gone">
 
         <ImageView
             android:id="@+id/imgDialog"

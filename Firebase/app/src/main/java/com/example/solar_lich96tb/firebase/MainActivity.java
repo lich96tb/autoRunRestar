@@ -31,12 +31,12 @@ public class MainActivity extends AppCompatActivity {
     private DatabaseReference mDatabase;
     EditText edtSen;
     LinearLayout btnCheck;
-    EditText edtLink;
-    private TextView txtCheckIsPlay, valueVolume;
+    TextView edtLink;
+    private TextView txtCheckIsPlay, valueVolume,txtSelect1,txtSelect2;
     private boolean checkplay;
     private String url;
     private ImageView imgIsPlay;
-    private LinearLayout layoutVolume,dialog_display,linearLayout;
+    private LinearLayout layoutVolume, dialog_display, linearLayout;
     private SeekBar seekbarVolume;
 
     @Override
@@ -96,8 +96,10 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void initView() {
-        linearLayout=findViewById(R.id.linearLayout);
-        dialog_display=findViewById(R.id.dialog_display);
+        txtSelect1=findViewById(R.id.txtSelect1);
+        txtSelect2=findViewById(R.id.txtSelect2);
+        linearLayout = findViewById(R.id.linearLayout);
+        dialog_display = findViewById(R.id.dialog_display);
         valueVolume = findViewById(R.id.valueVolume);
         seekbarVolume = findViewById(R.id.seekbarVolume);
         layoutVolume = findViewById(R.id.layoutVolume);
@@ -132,5 +134,23 @@ public class MainActivity extends AppCompatActivity {
             layoutVolume.setVisibility(View.VISIBLE);
             dialog_display.setVisibility(View.VISIBLE);
         }
+    }
+
+    public void clickChonbaihat(View view) {
+txtSelect1.setVisibility(View.VISIBLE);
+txtSelect2.setVisibility(View.VISIBLE);
+    }
+
+    public void clickSelect(View view) {
+        switch (view.getId()) {
+            case R.id.txtSelect1:
+                edtLink.setText("https://www.ssaurel.com/tmp/mymusic.mp3");
+                break;
+            case R.id.txtSelect2:
+                edtLink.setText("http://vprbbc.streamguys.net:80/vprbbc24.mp3");
+                break;
+        }
+        txtSelect1.setVisibility(View.GONE);
+        txtSelect2.setVisibility(View.GONE);
     }
 }
