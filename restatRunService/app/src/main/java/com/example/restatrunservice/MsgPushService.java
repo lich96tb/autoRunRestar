@@ -1,6 +1,5 @@
 package com.example.restatrunservice;
 
-import android.app.Activity;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -13,15 +12,20 @@ import android.net.NetworkInfo;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.widget.Toast;
 
-import com.google.firebase.database.ChildEventListener;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.gson.Gson;
 
 import java.io.IOException;
 
@@ -29,7 +33,8 @@ public class MsgPushService extends Service {
     private BroadcastReceiver broadcastReceiver;
     Handler handler = new Handler();
     MediaPlayer mp;
-    String url = "http://vprbbc.streamguys.net:80/vprbbc24.mp3";
+   // String url = "http://vprbbc.streamguys.net:80/vprbbc24.mp3";
+    String url = "http://192.168.0.111:50819/stream/swyh.mp3";
     private DatabaseReference mDatabase;
     int i = 0;
     private AudioManager audio;
@@ -68,7 +73,7 @@ public class MsgPushService extends Service {
             }
         };
 
-        ListenerSen();
+       // ListenerSen();
     }
 
     @Override
@@ -141,4 +146,6 @@ public class MsgPushService extends Service {
             }
         });
     }
+
+
 }

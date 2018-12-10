@@ -1,8 +1,17 @@
 package com.example.restatrunservice;
 
+import com.google.gson.annotations.SerializedName;
+
 public class User {
+    @SerializedName("Status")
   private boolean checkplay;
+
+    @SerializedName("Link")
   private String link;
+
+    @SerializedName("Volume")
+    private int volumeConfig;
+
   private boolean checkSenLink;
 
     public boolean isCheckplay() {
