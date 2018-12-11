@@ -34,50 +34,50 @@ public class MainActivity extends AppCompatActivity {
         startService(new Intent(getBaseContext(), MsgPushService.class));
        // mDatabase = FirebaseDatabase.getInstance().getReference();
        // ListenerSen();
-        getStreamState();
+       // getStreamState();
     }
 
-    private void getStreamState(){
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                // Get ping
-                // Creating a string request
-                String url = "http://192.168.1.111:9000/api/Ping?id=5";
-                StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                        new Response.Listener<String>() {
-                            @Override
-                            public void onResponse(final String response) {
-                                if (response == null || response.isEmpty()) {
-                                    return;
-                                }
-                                DataResponseModel reponseModel = new Gson()
-                                        .fromJson(response, DataResponseModel.class);
-                                Log.e("avc ","Link" + reponseModel.getLink());
-                                Log.e("avc ","State" + reponseModel.isCheckplay());
-                                Log.e("avc ","Volume" + reponseModel.getVolumeConfig());
-                                if(reponseModel.isCheckplay()){
-                                    //start services voi link
-
-                                } else {
-                                   // páuse stream
-
-                                }
-                            }
-                        }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        // Thông báo lỗi
-                    }
-                });
-                // Adding the string request to the queue
-                RequestQueue requestQueue = Volley.newRequestQueue(MainActivity.this);
-                requestQueue.add(stringRequest);
-
-
-                // Ping re-try
-                getStreamState();
-            }
-        }, 2000);
-    }
+//    private void getStreamState(){
+//        new Handler().postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                // Get ping
+//                // Creating a string request
+//                String url = "http://192.168.1.111:9000/api/Ping?id=5";
+//                StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+//                        new Response.Listener<String>() {
+//                            @Override
+//                            public void onResponse(final String response) {
+//                                if (response == null || response.isEmpty()) {
+//                                    return;
+//                                }
+//                                DataResponseModel reponseModel = new Gson()
+//                                        .fromJson(response, DataResponseModel.class);
+//                                Log.e("avc ","Link" + reponseModel.getLink());
+//                                Log.e("avc ","State" + reponseModel.isCheckplay());
+//                                Log.e("avc ","Volume" + reponseModel.getVolumeConfig());
+//                                if(reponseModel.isCheckplay()){
+//                                    //start services voi link
+//
+//                                } else {
+//                                   // páuse stream
+//
+//                                }
+//                            }
+//                        }, new Response.ErrorListener() {
+//                    @Override
+//                    public void onErrorResponse(VolleyError error) {
+//                        // Thông báo lỗi
+//                    }
+//                });
+//                // Adding the string request to the queue
+//                RequestQueue requestQueue = Volley.newRequestQueue(MainActivity.this);
+//                requestQueue.add(stringRequest);
+//
+//
+//                // Ping re-try
+//                getStreamState();
+//            }
+//        }, 2000);
+//    }
 }

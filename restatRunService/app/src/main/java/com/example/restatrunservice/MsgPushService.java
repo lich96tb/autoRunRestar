@@ -12,6 +12,7 @@ import android.net.NetworkInfo;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -33,8 +34,8 @@ public class MsgPushService extends Service {
     private BroadcastReceiver broadcastReceiver;
     Handler handler = new Handler();
     MediaPlayer mp;
-   // String url = "http://vprbbc.streamguys.net:80/vprbbc24.mp3";
-    String url = "http://192.168.0.111:50819/stream/swyh.mp3";
+    // String url = "http://vprbbc.streamguys.net:80/vprbbc24.mp3";
+    private String url, checkUrl = "";
     private DatabaseReference mDatabase;
     int i = 0;
     private AudioManager audio;
@@ -54,15 +55,9 @@ public class MsgPushService extends Service {
                 if (intent.getAction() == "android.net.conn.CONNECTIVITY_CHANGE") {
                     mp.reset();
                     if (isOnline(context)) {
-                        Toast.makeText(context, "co mang ", Toast.LENGTH_SHORT).show();
-                        try {
-                            mp.setDataSource(url);
-                            mp.prepare();
-                            Toast.makeText(getApplicationContext(), "thoi gian " + mp.getDuration(), Toast.LENGTH_SHORT).show();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        mp.start();
+                        getStreamState();
+
+
                     } else {
                         mp = MediaPlayer.create(getApplicationContext(), R.raw.duthenaodinua);
                         mp.start();
@@ -73,7 +68,7 @@ public class MsgPushService extends Service {
             }
         };
 
-       // ListenerSen();
+        // ListenerSen();
     }
 
     @Override
@@ -136,8 +131,8 @@ public class MsgPushService extends Service {
         mDatabase.child("Volume").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                int value=dataSnapshot.getValue(Integer.class);
-                audio.setStreamVolume(AudioManager.STREAM_MUSIC, maxVolume*value/100, 0);
+                int value = dataSnapshot.getValue(Integer.class);
+                audio.setStreamVolume(AudioManager.STREAM_MUSIC, maxVolume * value / 100, 0);
             }
 
             @Override
@@ -147,5 +142,68 @@ public class MsgPushService extends Service {
         });
     }
 
+
+    private void getStreamState() {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                // Get ping
+                // Creating a string request
+                //  String url = "http://192.168.1.111:9000/api/Ping?id=5";
+                StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                        new Response.Listener<String>() {
+                            @Override
+                            public void onResponse(final String response) {
+                                if (response == null || response.isEmpty()) {
+                                    return;
+                                }
+                                DataResponseModel reponseModel = new Gson()
+                                        .fromJson(response, DataResponseModel.class);
+                                Log.e("avc ", "Link" + reponseModel.getLink());
+                                Log.e("avc ", "State" + reponseModel.isCheckplay());
+                                Log.e("avc ", "Volume" + reponseModel.getVolumeConfig());
+                                url = reponseModel.getLink();
+                                if (reponseModel.isCheckplay()) {
+                                    Toast.makeText(getApplicationContext(), "co mang ", Toast.LENGTH_SHORT).show();
+                                    try {
+                                        if (!checkUrl.equals(reponseModel.getLink())) {
+                                            mp.setDataSource(url);
+                                            mp.prepare();
+                                            Toast.makeText(getApplicationContext(), "phat nhac " + mp.getDuration(), Toast.LENGTH_SHORT).show();
+                                        }
+                                        mp.start();
+
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+
+
+                                    //start services voi link
+
+                                } else {
+                                    if (mp != null){
+                                        mp.pause();
+                                        // páuse stream
+                                    }
+
+
+                                }
+                            }
+                        }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // Thông báo lỗi
+                    }
+                });
+                // Adding the string request to the queue
+                RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+                requestQueue.add(stringRequest);
+
+
+                // Ping re-try
+                getStreamState();
+            }
+        }, 2000);
+    }
 
 }
