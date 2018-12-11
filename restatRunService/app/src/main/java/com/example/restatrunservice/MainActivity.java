@@ -1,6 +1,7 @@
 package com.example.restatrunservice;
 
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -22,19 +23,31 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.gson.Gson;
 
+import java.io.IOException;
 import java.util.Collections;
 
 public class MainActivity extends AppCompatActivity {
     private DatabaseReference mDatabase;
     int i=0;
+    MediaPlayer mp;
+    private String url;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        startService(new Intent(getBaseContext(), MsgPushService.class));
+     startService(new Intent(getBaseContext(), MsgPushService.class));
        // mDatabase = FirebaseDatabase.getInstance().getReference();
        // ListenerSen();
-        getStreamState();
+//        mp = new MediaPlayer();
+//        try {
+//            mp.setDataSource("http://192.168.0.111:50004/stream/swyh.mp3");
+//            mp.prepare();
+//            mp.start();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+
+  // getStreamState();
     }
 
     private void getStreamState(){
@@ -43,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 // Get ping
                 // Creating a string request
-                String url = "http://192.168.1.111:9000/api/Ping?id=5";
+                 url = "http://192.168.0.111:9000/api/Ping?id=5";
                 StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                         new Response.Listener<String>() {
                             @Override
@@ -51,13 +64,13 @@ public class MainActivity extends AppCompatActivity {
                                 if (response == null || response.isEmpty()) {
                                     return;
                                 }
+
+
                                 DataResponseModel reponseModel = new Gson()
                                         .fromJson(response, DataResponseModel.class);
-                                Log.e("avc ","Link" + reponseModel.getLink());
-                                Log.e("avc ","State" + reponseModel.isCheckplay());
-                                Log.e("avc ","Volume" + reponseModel.getVolumeConfig());
-                                if(reponseModel.isCheckplay()){
+                                if(reponseModel.getVolume() > 0){
                                     //start services voi link
+                                    Toast.makeText(MainActivity.this, "123", Toast.LENGTH_SHORT).show();
 
                                 } else {
                                    // páuse stream

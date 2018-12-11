@@ -12,6 +12,7 @@ import android.net.NetworkInfo;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -33,8 +34,11 @@ public class MsgPushService extends Service {
     private BroadcastReceiver broadcastReceiver;
     Handler handler = new Handler();
     MediaPlayer mp;
-   // String url = "http://vprbbc.streamguys.net:80/vprbbc24.mp3";
-    String url = "http://192.168.0.111:50819/stream/swyh.mp3";
+    private String urlStream = "http://192.168.0.111:50004/stream/swyh.mp3";
+
+    String url;
+    //String url = "http://vprbbc.streamguys.net:80/vprbbc24.mp3";
+    // String url = "http://192.168.0.111:50004/stream/swyh.mp3";
     private DatabaseReference mDatabase;
     int i = 0;
     private AudioManager audio;
@@ -43,43 +47,31 @@ public class MsgPushService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        mDatabase = FirebaseDatabase.getInstance().getReference();
+
         audio = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         maxVolume = audio.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
         mp = new MediaPlayer();
         broadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-
+                Toast.makeText(getApplicationContext(), "co mang ssdddddddd", Toast.LENGTH_SHORT).show();
                 if (intent.getAction() == "android.net.conn.CONNECTIVITY_CHANGE") {
-                    mp.reset();
+                 //   mp.reset();
                     if (isOnline(context)) {
                         Toast.makeText(context, "co mang ", Toast.LENGTH_SHORT).show();
-                        try {
-                            mp.setDataSource(url);
-                            mp.prepare();
-                            Toast.makeText(getApplicationContext(), "thoi gian " + mp.getDuration(), Toast.LENGTH_SHORT).show();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        mp.start();
-                    } else {
-                        mp = MediaPlayer.create(getApplicationContext(), R.raw.duthenaodinua);
-                        mp.start();
-                        Toast.makeText(context, "mat mang ", Toast.LENGTH_SHORT).show();
+                        getStreamState();
 
                     }
                 }
             }
         };
 
-       // ListenerSen();
+        // ListenerSen();
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         registerReceiver(broadcastReceiver, new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE"));
-
         return Service.START_STICKY;
     }
 
@@ -136,8 +128,8 @@ public class MsgPushService extends Service {
         mDatabase.child("Volume").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                int value=dataSnapshot.getValue(Integer.class);
-                audio.setStreamVolume(AudioManager.STREAM_MUSIC, maxVolume*value/100, 0);
+                int value = dataSnapshot.getValue(Integer.class);
+                audio.setStreamVolume(AudioManager.STREAM_MUSIC, maxVolume * value / 100, 0);
             }
 
             @Override
@@ -147,5 +139,57 @@ public class MsgPushService extends Service {
         });
     }
 
+    private void getStreamState() {
+        try {
+            mp.setDataSource(urlStream);
+            mp.prepare();
+           mp.start();
 
+            Toast.makeText(getApplicationContext(), "thoi gian " + mp.getDuration(), Toast.LENGTH_SHORT).show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+//        new Handler().postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                // Get ping
+//                // Creating a string request
+//                url = "http://192.168.0.111:9000/api/Ping?id=5";
+//                StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+//                        new Response.Listener<String>() {
+//                            @Override
+//                            public void onResponse(final String response) {
+//                                if (response == null || response.isEmpty()) {
+//                                    return;
+//                                }
+//
+//
+//                                DataResponseModel reponseModel = new Gson()
+//                                        .fromJson(response, DataResponseModel.class);
+//                                if(reponseModel.getVolume() > 0){
+//                                    //start services voi link
+//                                    Toast.makeText(getApplicationContext(), "123", Toast.LENGTH_SHORT).show();
+//
+//                                } else {
+//                                    // páuse stream
+//
+//                                }
+//                            }
+//                        }, new Response.ErrorListener() {
+//                    @Override
+//                    public void onErrorResponse(VolleyError error) {
+//                        // Thông báo lỗi
+//                    }
+//                });
+//                // Adding the string request to the queue
+//                RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+//                requestQueue.add(stringRequest);
+//
+//
+//                // Ping re-try
+//                getStreamState();
+//            }
+//        }, 2000);
+    }
 }
