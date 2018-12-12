@@ -34,7 +34,7 @@ public class MsgPushService extends Service {
     private BroadcastReceiver broadcastReceiver;
     Handler handler = new Handler();
     MediaPlayer mp;
-    private String urlStream = "http://192.168.0.111:50004/stream/swyh.mp3";
+    private String urlStream = "http://192.168.1.31:52319/stream/swyh.mp3";
 
     String url;
     //String url = "http://vprbbc.streamguys.net:80/vprbbc24.mp3";
@@ -145,7 +145,7 @@ public class MsgPushService extends Service {
             mp.prepare();
            mp.start();
 
-            Toast.makeText(getApplicationContext(), "thoi gian " + mp.getDuration(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "thoi gian aaaaaaaaaaaaaaa " + mp.getDuration(), Toast.LENGTH_SHORT).show();
         } catch (IOException e) {
             e.printStackTrace();
         }
