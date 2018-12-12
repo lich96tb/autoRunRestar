@@ -12,6 +12,7 @@ import android.net.NetworkInfo;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -34,15 +35,16 @@ public class MsgPushService extends Service {
     private BroadcastReceiver broadcastReceiver;
     Handler handler = new Handler();
     MediaPlayer mp;
-    private String urlStream = "http://192.168.1.31:52319/stream/swyh.mp3";
+    private String urlStream = "";
 
-    String url;
-    //String url = "http://vprbbc.streamguys.net:80/vprbbc24.mp3";
-    // String url = "http://192.168.0.111:50004/stream/swyh.mp3";
-    private DatabaseReference mDatabase;
-    int i = 0;
     private AudioManager audio;
     private int maxVolume;
+
+    private DatabaseReference mDatabase;
+    int i = 0;
+
+    // Nếu link stream thay đổi thì gán lại
+    private boolean isChangeLink = false;
 
     @Override
     public void onCreate() {
@@ -113,6 +115,7 @@ public class MsgPushService extends Service {
                     }
 
                 }
+
                 if (user.isCheckplay()) {
                     mp.start();
                 } else {
@@ -141,55 +144,59 @@ public class MsgPushService extends Service {
     }
 
     private void getStreamState() {
-        try {
-            mp = new MediaPlayer();
-            mp.setDataSource(urlStream);
-            mp.prepare();
-           mp.start();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        final String urlRequest = "http://192.168.0.111:9000/api/Ping?id=5";
 
-//        new Handler().postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                // Get ping
-//                // Creating a string request
-//                url = "http://192.168.0.111:9000/api/Ping?id=5";
-//                StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-//                        new Response.Listener<String>() {
-//                            @Override
-//                            public void onResponse(final String response) {
-//                                if (response == null || response.isEmpty()) {
-//                                    return;
-//                                }
-//
-//
-//                                DataResponseModel reponseModel = new Gson()
-//                                        .fromJson(response, DataResponseModel.class);
-//                                if(reponseModel.getVolume() > 0){
-//                                    //start services voi link
-//                                    Toast.makeText(getApplicationContext(), "123", Toast.LENGTH_SHORT).show();
-//
-//                                } else {
-//                                    // páuse stream
-//
-//                                }
-//                            }
-//                        }, new Response.ErrorListener() {
-//                    @Override
-//                    public void onErrorResponse(VolleyError error) {
-//                        // Thông báo lỗi
-//                    }
-//                });
-//                // Adding the string request to the queue
-//                RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
-//                requestQueue.add(stringRequest);
-//
-//
-//                // Ping re-try
-//                getStreamState();
-//            }
-//        }, 2000);
+        mp = new MediaPlayer();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                // Get ping
+                // Creating a string request
+
+                StringRequest stringRequest = new StringRequest(Request.Method.GET, urlRequest,
+                        new Response.Listener<String>() {
+                            @Override
+                            public void onResponse(final String response) {
+                                if (response == null || response.isEmpty()) {
+                                    return;
+                                }
+
+                                DataResponseModel reponseModel = new Gson()
+                                        .fromJson(response, DataResponseModel.class);
+                                // Nếu trạng thái là play và link stream khác rỗng thì xử lý play
+                                if(reponseModel.getPlayStatus() == 0 && !TextUtils.isEmpty(reponseModel.getLink())){
+                                    // Nếu link Stream không thay đổi thì bỏ qua không cần cập nhật lại
+                                    if(urlStream.equalsIgnoreCase(reponseModel.getLink())){
+                                        return;
+                                    }
+                                    // Nếu link có thay đổi thì play lại media player với mức volume server trả về
+                                    urlStream = reponseModel.getLink();
+                                    try {
+                                        mp.setDataSource(urlStream);
+                                        mp.prepare();
+                                        mp.start(); }
+                                    catch (IOException e) {
+                                        e.printStackTrace(); }
+                                  //  audio.setStreamVolume(AudioManager.STREAM_MUSIC, maxVolume * valueVolume / 100, 0);
+                                } else {
+                                    // páuse stream
+                                    mp.pause();
+                                }
+                            }
+                        }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // Thông báo lỗi
+                    }
+                });
+                // Adding the string request to the queue
+                RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+                requestQueue.add(stringRequest);
+
+
+                // Ping re-try
+                getStreamState();
+            }
+        }, 2000);
     }
 }

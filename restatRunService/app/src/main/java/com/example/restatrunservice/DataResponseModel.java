@@ -36,6 +36,9 @@ public class DataResponseModel {
     @SerializedName("Link")
     private String link;
 
+    @SerializedName("PlayStatus")
+    private int playStatus;
+
     public DataResponseModel() {
         // Create
     }
@@ -118,5 +121,13 @@ public class DataResponseModel {
 
     public void setLink(String link) {
         this.link = link;
+    }
+
+    public int getPlayStatus() {
+        return playStatus;
+    }
+
+    public void setPlayStatus(int playStatus) {
+        this.playStatus = playStatus;
     }
 }
