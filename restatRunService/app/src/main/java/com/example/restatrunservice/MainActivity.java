@@ -28,16 +28,17 @@ import java.util.Collections;
 
 public class MainActivity extends AppCompatActivity {
     private DatabaseReference mDatabase;
-    int i=0;
+    int i = 0;
     MediaPlayer mp;
     private String url;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-     startService(new Intent(getBaseContext(), MsgPushService.class));
-       // mDatabase = FirebaseDatabase.getInstance().getReference();
-       // ListenerSen();
+        startService(new Intent(getBaseContext(), MsgPushService.class));
+        // mDatabase = FirebaseDatabase.getInstance().getReference();
+        // ListenerSen();
 //        mp = new MediaPlayer();
 //        try {
 //            mp.setDataSource("http://192.168.0.111:50004/stream/swyh.mp3");
@@ -47,16 +48,16 @@ public class MainActivity extends AppCompatActivity {
 //            e.printStackTrace();
 //        }
 
-  // getStreamState();
+        // getStreamState();
     }
 
-    private void getStreamState(){
+    private void getStreamState() {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
                 // Get ping
                 // Creating a string request
-                 url = "http://192.168.0.111:9000/api/Ping?id=5";
+                url = "http://192.168.0.111:9000/api/Ping?id=5";
                 StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                         new Response.Listener<String>() {
                             @Override
@@ -68,12 +69,12 @@ public class MainActivity extends AppCompatActivity {
 
                                 DataResponseModel reponseModel = new Gson()
                                         .fromJson(response, DataResponseModel.class);
-                                if(reponseModel.getVolume() > 0){
+                                if (reponseModel.getVolume() > 0) {
                                     //start services voi link
                                     Toast.makeText(MainActivity.this, "123", Toast.LENGTH_SHORT).show();
 
                                 } else {
-                                   // páuse stream
+                                    // páuse stream
 
                                 }
                             }
