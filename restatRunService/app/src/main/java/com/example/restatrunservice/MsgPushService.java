@@ -54,7 +54,7 @@ public class MsgPushService extends Service {
         broadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                Toast.makeText(getApplicationContext(), "co mang ssdddddddd", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "co  check masng", Toast.LENGTH_SHORT).show();
                 if (intent.getAction() == "android.net.conn.CONNECTIVITY_CHANGE") {
                  //   mp.reset();
                     if (isOnline(context)) {
@@ -142,6 +142,7 @@ public class MsgPushService extends Service {
 
     private void getStreamState() {
         try {
+            mp = new MediaPlayer();
             mp.setDataSource(urlStream);
             mp.prepare();
            mp.start();
