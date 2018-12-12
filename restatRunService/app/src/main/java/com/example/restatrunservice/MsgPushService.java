@@ -146,8 +146,6 @@ public class MsgPushService extends Service {
             mp.setDataSource(urlStream);
             mp.prepare();
            mp.start();
-
-            Toast.makeText(getApplicationContext(), "thoi gian aaaaaaaaaaaaaaa " + mp.getDuration(), Toast.LENGTH_SHORT).show();
         } catch (IOException e) {
             e.printStackTrace();
         }
